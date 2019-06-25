@@ -39,6 +39,9 @@ export default class App extends Component {
     this.setState({ input: this.state.input + " + " })
     console.log(this.state.left, this.state.operation);
   }
+  handleDecimal() {
+
+  }
   handleEvaluation() {
     let currentScreen = this.state.screen;
     let output = Number(this.state.left) + Number(currentScreen);
