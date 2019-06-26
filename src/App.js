@@ -5,7 +5,7 @@ const initialState = {
   screen: 0,
   left: null,
   operation: null,
-  input: ''
+  input: 0
 };
 export default class App extends Component {
   constructor(props) {
@@ -17,11 +17,12 @@ export default class App extends Component {
     if (this.state.screen === 0 || this.state.operation !== null) {
       this.setState({ screen: num });
     } else {
-      this.setState({ screen: "" + this.state.screen + num })
+      this.setState({ screen: this.state.screen + num })
     }
-    if (this.state.screen !== 0) {
-      this.setState({ input: this.state.input + "" + num });
+    if (this.state.input === '0') {
+      this.setState({ input: '' });
     }
+    this.setState({ input: '' + this.state.input + num });
   }
 
   clearScreen() {
@@ -49,7 +50,7 @@ export default class App extends Component {
       this.setState({ screen: output });
       this.setState({ operation: '=' });
     }
-    this.setState({ input: this.state.input + " = " + output })
+    this.setState({ input: this.state.input + " = " + output });
   }
   render() {
     return (
