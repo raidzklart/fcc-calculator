@@ -1,7 +1,78 @@
-.App {
-  text-align: center;
+body {
+  padding-top: 5%;
 }
 
-.buttons {
-  display: inline-grid;
+.calculator {
+  background-color: transparent;
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0px auto;
+  width: 25%;
+  height: 60vh;
+  text-align: center;
+  font-size: 40px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(50px, auto);
+  box-shadow: 10px 10px 18px 2px #888888;
+}
+
+#display {
+  text-align: end;
+  padding-right: 10px;
+  background-color: #444;
+  color: #ffffff;
+  grid-column: 1/5;
+  padding-bottom: 5% 0;
+}
+
+.zero {
+  grid-column: 1/3;
+}
+
+.btn {
+  background-color: #eee;
+  border: solid 1px #bbb;
+  padding: 20% 0;
+}
+
+.top-row {
+  background-color: #ddd;
+}
+
+.btn:hover {
+  background-color: #ccc;
+}
+
+.top-row:hover {
+  background-color: #bbb;
+}
+
+.operator {
+  background-color: orange;
+}
+
+.operator:hover {
+  background-color: rgb(177, 115, 0);
+}
+
+@media only screen and (max-width: 960px) {
+  .calculator {
+    margin-top: 10%;
+    width: 30%;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .calculator {
+    margin-top: 10%;
+    width: 40%;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .calculator {
+    margin-top: 10%;
+    width: 60%;
+    min-width: 300px;
+  }
 }

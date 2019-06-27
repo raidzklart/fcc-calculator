@@ -2,10 +2,10 @@ import './App.css';
 import React, { Component } from 'react'
 
 const initialState = {
-  screen: 0,
-  left: null,
-  operation: null,
-  input: 0
+  value: null,
+  displayValue: '',
+  operator: null,
+  waitingForOperand: false
 };
 export default class App extends Component {
   constructor(props) {
@@ -13,83 +13,106 @@ export default class App extends Component {
     this.state = initialState;
   }
 
-  numberClick(num) {
-    if (this.state.screen === 0 || this.state.operation !== null) {
-      this.setState({ screen: num });
-    } else {
-      this.setState({ screen: this.state.screen + num })
-    }
-    if (this.state.input === '0') {
-      this.setState({ input: '' });
-    }
-    this.setState({ input: '' + this.state.input + num });
-  }
-
-  clearScreen() {
+  clear() {
     this.setState({
-      screen: 0,
-      input: ''
+      displayValue: ''
+    });
+  }
+  sign() {
+    this.state.displayValue.charAt(0) === '-' ? this.setState({ displayValue: this.state.displayValue.slice(1) }) : this.setState({ displayValue: `-${this.state.displayValue}` });
+  }
+  percent() {
+    this.setState({ displayValue: `${parseFloat(this.state.displayValue) / 100}` })
+  }
+  append(number) {
+    const { displayValue, waitingForOperand } = this.state
+    if (waitingForOperand) {
+      this.setState({
+        displayValue: number,
+        waitingForOperand: false
+      })
+    } else {
+      this.setState({
+        displayValue: displayValue === '0' ? number : displayValue + number
+      })
+    }
+  }
+  dot() {
+    const { waitingForOperand } = this.state
+    if (waitingForOperand) {
+
+    }
+    if (this.state.displayValue === '') {
+      this.append('0.');
+    }
+    else if (this.state.displayValue.indexOf('.') === -1) {
+      this.append('.');
+      this.setState({ waitingForOperand: false })
+    }
+  }
+  setPrevious() {
+    this.setState({
+      previous: this.state.displayValue,
+      operatorClicked: true
     });
   }
 
-  handleAdd() {
-    if (this.state.left === null) {
-      this.setState({ operation: '+' });
-      this.setState({ left: this.state.screen })
-    }
-    this.setState({ input: this.state.input + " + " })
-    console.log(this.state.left, this.state.operation);
-  }
-  handleDecimal() {
+  performOperation(nextOperator) {
+    const { displayValue, operator, value } = this.state
+    const nextValue = parseFloat(displayValue);
 
-  }
-  handleEvaluation() {
-    let currentScreen = this.state.screen;
-    let output = Number(this.state.left) + Number(currentScreen);
-    if (this.state.operation === '+') {
-      this.setState({ screen: output });
-      this.setState({ operation: '=' });
+    const operations = {
+      '/': (prevValue, nextValue) => prevValue / nextValue,
+      '*': (prevValue, nextValue) => prevValue * nextValue,
+      '-': (prevValue, nextValue) => prevValue - nextValue,
+      '+': (prevValue, nextValue) => prevValue + nextValue,
+      '=': (prevValue, nextValue) => nextValue
     }
-    this.setState({ input: this.state.input + " = " + output });
+
+    if (value == null) {
+      this.setState({
+        value: nextValue
+      })
+    } else if (operator) {
+      const currentValue = value || 0
+      const computedValue = operations[operator](currentValue, nextValue);
+
+      this.setState({
+        value: computedValue,
+        displayValue: String(computedValue)
+      })
+    }
+    this.setState({
+      waitingForOperand: true,
+      operator: nextOperator
+    })
   }
   render() {
     return (
-      <div className="App">
-        <div id="display">
-          <p id="input">{this.state.input}</p>
-          <p >{this.state.screen}</p>
+      <section>
+        <div className="calculator">
+          <div id="display">{this.state.displayValue === '' ? 0 : this.state.displayValue}</div>
+          <div className="btn top-row" id="clear" onClick={() => { this.clear() }}>C</div>
+          <div className="btn top-row" onClick={() => { this.sign() }}>+/-</div>
+          <div className="btn top-row" onClick={() => { this.percent() }}>%</div>
+          <div className="btn operator" id="divide" onClick={() => { this.performOperation('/') }}>÷</div>
+          <div className="btn" id="seven" onClick={() => { this.append('7') }}>7</div>
+          <div className="btn" id="eight" onClick={() => { this.append('8') }}>8</div>
+          <div className="btn" id="nine" onClick={() => { this.append('9') }}>9</div>
+          <div className="btn operator" id="multiply" onClick={() => { this.performOperation('*') }}>x</div>
+          <div className="btn" id="four" onClick={() => { this.append('4') }}>4</div>
+          <div className="btn" id="five" onClick={() => { this.append('5') }}>5</div>
+          <div className="btn" id="six" onClick={() => { this.append('6') }}>6</div>
+          <div className="btn operator" id="subtract" onClick={() => { this.performOperation('-') }}>-</div>
+          <div className="btn" id="one" onClick={() => { this.append('1') }}>1</div>
+          <div className="btn" id="two" onClick={() => { this.append('2') }}>2</div>
+          <div className="btn" id="three" onClick={() => { this.append('3') }}>3</div>
+          <div className="btn operator" id="add" onClick={() => { this.performOperation('+') }}>+</div>
+          <div className="zero btn" id="zero" onClick={() => { this.append('0') }}>0</div>
+          <div className="btn" id="decimal" onClick={() => { this.dot() }}>.</div>
+          <div className="btn operator" id="equals" onClick={() => { this.performOperation('=') }}>=</div>
         </div>
-        <div className="buttons">
-          <div className="top-row">
-            <button id="clear" onClick={() => { this.clearScreen() }}>AC</button>
-            <button id="divide">÷</button>
-          </div>
-          <div className="second-row">
-            <button id="seven" onClick={() => { this.numberClick(7) }}>7</button>
-            <button id="eight" onClick={() => { this.numberClick(8) }}>8</button>
-            <button id="nine" onClick={() => { this.numberClick(9) }}>9</button>
-            <button id="multiply">x</button>
-          </div>
-          <div className="third-row">
-            <button id="four" onClick={() => { this.numberClick(4) }}>4</button>
-            <button id="five" onClick={() => { this.numberClick(5) }}>5</button>
-            <button id="six" onClick={() => { this.numberClick(6) }}>6</button>
-            <button id="subtract">-</button>
-          </div>
-          <div className="fourth-row">
-            <button id="one" onClick={() => { this.numberClick(1) }}>1</button>
-            <button id="two" onClick={() => { this.numberClick(2) }}>2</button>
-            <button id="three" onClick={() => { this.numberClick(3) }}>3</button>
-            <button id="add" onClick={() => { this.handleAdd() }}>+</button>
-          </div>
-          <div className="bottom-row">
-            <button id="zero" onClick={() => { this.numberClick(0) }}>0</button>
-            <button id="decimal" onClick={() => { this.handleDecimal() }}>.</button>
-            <button id="equals" onClick={() => this.handleEvaluation()}>=</button>
-          </div>
-
-        </div>
-      </div>
+      </section>
     )
   }
 }
