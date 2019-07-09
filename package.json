@@ -23,7 +23,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "main": "index.js",
+  "main": "index.html",
   "bugs": {
     "url": "https://github.com/raidzklart/cc-calculator./issues"
   },
