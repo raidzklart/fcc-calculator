@@ -25,7 +25,7 @@
   "license": "ISC",
   "main": "index.js",
   "bugs": {
-    "url": "https://github.com/raidzklart/cc-calculator./issues"
+    "url": "https://github.com/raidzklart/fcc-calculator./issues"
   },
   "homepage": "https://raidzklart.github.io/fcc-calculator",
   "eslintConfig": {
